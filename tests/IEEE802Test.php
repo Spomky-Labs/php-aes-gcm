@@ -22,11 +22,11 @@ class IEEE802Test extends \PHPUnit_Framework_TestCase
      */
     public function testVectors($K, $P, $A, $IV, $expected_C, $expected_T)
     {
-        list ($C, $T) = AESGCM::encrypt($K, $IV, $P, $A);
+        list($C, $T) = AESGCM::encrypt($K, $IV, $P, $A);
 
         $this->assertEquals($C, $expected_C);
         $this->assertEquals($T, $expected_T);
-        
+
         $computed_P = AESGCM::decrypt($K, $IV, $C, $A, $T);
 
         $this->assertEquals($P, $computed_P);
