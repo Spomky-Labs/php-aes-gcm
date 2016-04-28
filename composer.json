@@ -1,0 +1,42 @@
+{
+    "name": "spomky-labs/php-aes-gcm",
+    "description": "AES GCM (Galois Counter Mode) PHP implementation.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["GCM", "Galois Counter Mode"],
+    "homepage": "https://github.com/Spomky-Labs/php-aes-gcm",
+    "authors": [
+        {
+            "name": "Florent Morselli",
+            "homepage": "https://github.com/Spomky"
+        },{
+            "name": "All contributors",
+            "homepage": "https://github.com/Spomky-Labs/php-aes-gcm/contributors"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "\\":  "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Test\\":  "tests/"
+        }
+    },
+    "require": {
+        "php": ">=5.4",
+        "lib-openssl": "*",
+        "beberlei/assert": "^2.0",
+        "symfony/polyfill-mbstring": "^1.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.5|^5.0",
+        "satooshi/php-coveralls": "^1.0"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
