@@ -16,10 +16,10 @@ use Assert\Assertion;
 final class AESGCM
 {
     /**
-     * @param string $K  Key encryption key
-     * @param string $IV Initialization vector
-     * @param string $P  Data to encrypt
-     * @param string $A  Additional Authentication Data
+     * @param string      $K  Key encryption key
+     * @param string      $IV Initialization vector
+     * @param null|string $P  Data to encrypt (null for authentication)
+     * @param null|string $A  Additional Authentication Data
      *
      * @return array
      */
@@ -38,13 +38,13 @@ final class AESGCM
     }
 
     /**
-     * @param string $K  Key encryption key
-     * @param string $IV Initialization vector
-     * @param string $C  Data to encrypt
-     * @param string $A  Additional Authentication Data
-     * @param string $T  Tag
+     * @param string      $K  Key encryption key
+     * @param string      $IV Initialization vector
+     * @param string|null $C  Data to encrypt (null for authentication)
+     * @param string|null $A  Additional Authentication Data
+     * @param string      $T  Tag
      *
-     * @return array
+     * @return string
      */
     public static function decrypt($K, $IV, $C, $A, $T)
     {
