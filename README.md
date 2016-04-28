@@ -63,7 +63,8 @@ $P = AESGCM::decrypt($K, $IV, $C, $A, $T);
 
 # Contributing
 
-Requests for new features, bug fixed and all other ideas to make this library useful are welcome. The best contribution you could provide is by fixing the [opened issues where help is wanted](https://github.com/Spomky-Labs/oauth2-server-library/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
+Requests for new features, bug fixed and all other ideas to make this library useful are welcome.
+The best contribution you could provide is by fixing the [opened issues where help is wanted](https://github.com/Spomky-Labs/php-aes-gcm/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
 
 Please make sure to [follow these best practices](doc/Contributing.md).
 
