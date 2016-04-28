@@ -3,7 +3,7 @@
     "description": "AES GCM (Galois Counter Mode) PHP implementation.",
     "type": "library",
     "license": "MIT",
-    "keywords": ["GCM", "Galois Counter Mode"],
+    "keywords": ["GCM", "Galois Counter Mode", "AES", "AES-GCM"],
     "homepage": "https://github.com/Spomky-Labs/php-aes-gcm",
     "authors": [
         {
