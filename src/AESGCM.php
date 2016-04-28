@@ -9,6 +9,8 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
+namespace AESGCM;
+
 use Assert\Assertion;
 
 final class AESGCM

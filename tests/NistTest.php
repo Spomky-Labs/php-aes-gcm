@@ -11,7 +11,7 @@
 
 namespace OAuth2\Test;
 
-use AESGCM;
+use AESGCM\AESGCM;
 
 class NistTest extends \PHPUnit_Framework_TestCase
 {

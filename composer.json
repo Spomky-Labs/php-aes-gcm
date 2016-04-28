@@ -16,12 +16,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "":  "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "AESGCM\\Test\\":  "tests/"
+            "AESGCM\\":  "src/"
         }
     },
     "require": {

@@ -11,7 +11,7 @@
 
 namespace OAuth2\Test;
 
-use AESGCM;
+use AESGCM\AESGCM;
 
 class IEEE802Test extends \PHPUnit_Framework_TestCase
 {
