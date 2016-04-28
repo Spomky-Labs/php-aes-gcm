@@ -61,6 +61,13 @@ final class AESGCM
         return $P;
     }
 
+    /**
+     * @param $K
+     * @param $IV
+     * @param $A
+     *
+     * @return array
+     */
     private static function common($K, $IV, $A)
     {
         $key_length = mb_strlen($K, '8bit') * 8;
@@ -258,7 +265,7 @@ final class AESGCM
      * @param string $ICB
      * @param string $X
      *
-     * @return null|string
+     * @return string
      */
     private static function getGCTR($K, $ICB, $X)
     {

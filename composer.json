@@ -16,12 +16,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "\\":  "src/"
+            "":  "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Test\\":  "tests/"
+            "AESGCM\\Test\\":  "tests/"
         }
     },
     "require": {
