@@ -12,6 +12,7 @@
  include_once __DIR__.'/../vendor/autoload.php';
 
 use AESGCM\AESGCM;
+use Assert\Assertion;
 
 /**
  * This function allows developpers to test the encryption performance of the library on their environnement
