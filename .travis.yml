@@ -16,6 +16,7 @@ before_script:
 
 script:
     - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+    - php tests/Benchmark.php
 
 after_success:
     - vendor/bin/coveralls --no-interaction
