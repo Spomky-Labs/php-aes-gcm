@@ -18,7 +18,7 @@ use Assert\Assertion;
  * This function allows developpers to test the encryption performance of the library on their environnement
  * @param int $nb Number of encryption/decryption to perform
  */
-function runEncryptionBenchmark($nb = 10000)
+function runEncryptionBenchmark($nb = 100)
 {
     Assertion::integer($nb, 'The argument must be an integer');
     Assertion::greaterThan($nb, 1, 'The argument must be greater than 1');
@@ -47,7 +47,7 @@ function runEncryptionBenchmark($nb = 10000)
  * This function allows developpers to test the decryption performance of the library on their environnement
  * @param int $nb Number of encryption/decryption to perform
  */
-function runDecryptionBenchmark($nb = 10000)
+function runDecryptionBenchmark($nb = 100)
 {
     Assertion::integer($nb, 'The argument must be an integer');
     Assertion::greaterThan($nb, 1, 'The argument must be greater than 1');
