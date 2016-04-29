@@ -68,6 +68,15 @@ The best contribution you could provide is by fixing the [opened issues where he
 
 Please make sure to [follow these best practices](doc/Contributing.md).
 
+# Benchmark
+
+In the `test` folder, a little script to run encryption and decryption benchmarks is available.
+You can run it on your environment to check how many time the encryption/decryption operations take.
+
+```sh
+php ./tests/Benchmark.php
+```
+
 # Licence
 
 This library is release under [MIT licence](LICENSE).
