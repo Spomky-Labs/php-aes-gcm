@@ -173,17 +173,9 @@ final class AESGCM
      */
     private static function toUInt32Bits($bin)
     {
-        // $bin is the binary 32-bit BE string that represents the integer
-        $int_size = 4;
-        if ($int_size <= 4) {
-            list(, $h, $l) = unpack('n*', $bin);
+        list(, $h, $l) = unpack('n*', $bin);
 
-            return $l + ($h * 0x010000);
-        } else {
-            list(, $int) = unpack('N', $bin);
-
-            return $int;
-        }
+        return $l + ($h * 0x010000);
     }
 
     /**
