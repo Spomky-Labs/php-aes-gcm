@@ -263,7 +263,7 @@ final class AESGCM
      */
     private static function getGCTR($K, $ICB, $X)
     {
-        if ('' === $X) {
+        if (empty($X)) {
             return '';
         }
 
