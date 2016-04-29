@@ -78,7 +78,7 @@ final class AESGCM
         $H = openssl_encrypt(str_repeat("\0", 16), 'aes-'.($key_length).'-ecb', $K, OPENSSL_NO_PADDING | OPENSSL_RAW_DATA); //---
         $iv_len = self::getLength($IV);
 
-        if ($iv_len == 96) {
+        if (96 === $iv_len) {
             $J0 = $IV.pack('H*', '00000001');
         } else {
             $s = self::calcVector($IV);
@@ -228,7 +228,7 @@ final class AESGCM
                     continue;
                 }
             }
-            $parts[$i] = ($parts[$i] >> 1) & 0x7FFFFFFF; // get rid of sign bit
+            $parts[$i] = ($parts[$i] >> 1) & 0x7FFFFFFF;
             $parts[$i] = pack('N', $parts[$i]);
         }
         $res = implode('', $parts);
@@ -263,7 +263,7 @@ final class AESGCM
      */
     private static function getGCTR($K, $ICB, $X)
     {
-        if ($X == '') {
+        if ('' === $X) {
             return '';
         }
 
