@@ -1,6 +1,8 @@
 AES GCM (Galois Counter Mode) PHP Implementation
 ====================================================
 
+[![Gitter](https://badges.gitter.im/Spomky-Labs/php-aes-gcm.svg)](https://gitter.im/Spomky-Labs/php-aes-gcm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spomky-Labs/php-aes-gcm/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/php-aes-gcm/?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/Spomky-Labs/php-aes-gcm/badge.svg?branch=master)](https://coveralls.io/github/Spomky-Labs/php-aes-gcm?branch=master)
 
