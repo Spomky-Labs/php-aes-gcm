@@ -16,15 +16,22 @@ use Assert\Assertion;
 final class AESGCM
 {
     /**
-     * @param string      $K  Key encryption key
-     * @param string      $IV Initialization vector
-     * @param null|string $P  Data to encrypt (null for authentication)
-     * @param null|string $A  Additional Authentication Data
+     * @param string      $K          Key encryption key
+     * @param string      $IV         Initialization vector
+     * @param null|string $P          Data to encrypt (null for authentication)
+     * @param null|string $A          Additional Authentication Data
+     * @param int         $tag_length Tag length
      *
      * @return array
      */
-    public static function encrypt($K, $IV, $P, $A)
+    public static function encrypt($K, $IV, $P = null, $A = null, $tag_length = 128)
     {
+        Assertion::string($K, 'The key encryption key must be a binary string.');
+        Assertion::string($IV, 'The Initialization Vector must be a binary string.');
+        Assertion::nullOrString($P, 'The data to encrypt must be null or a binary string.');
+        Assertion::nullOrString($A, 'The Additional Authentication Data must be null or a binary string.');
+        Assertion::integer($tag_length, 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
+        Assertion::inArray($tag_length, [128, 120, 112, 104, 96], 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
         list($J0, $v, $a_len_padding, $H) = self::common($K, $IV, $A);
 
         $C = self::getGCTR($K, self::getInc(32, $J0), $P);
@@ -32,9 +39,25 @@ final class AESGCM
         $c_len_padding = self::addPadding($C);
 
         $S = self::getHash($H, $A.str_pad('', $v / 8, "\0").$C.str_pad('', $u / 8, "\0").$a_len_padding.$c_len_padding);
-        $T = self::getMSB(128, self::getGCTR($K, $J0, $S));
+        $T = self::getMSB($tag_length, self::getGCTR($K, $J0, $S));
 
         return [$C, $T];
+    }
+
+    /**
+     * This method will append the tag at the end of the ciphertext.
+     *
+     * @param string      $K          Key encryption key
+     * @param string      $IV         Initialization vector
+     * @param null|string $P          Data to encrypt (null for authentication)
+     * @param null|string $A          Additional Authentication Data
+     * @param int         $tag_length Tag length
+     *
+     * @return string
+     */
+    public static function encryptAndAppendTag($K, $IV, $P = null, $A = null, $tag_length = 128)
+    {
+        return implode(self::encrypt($K, $IV, $P, $A, $tag_length));
     }
 
     /**
@@ -46,8 +69,16 @@ final class AESGCM
      *
      * @return string
      */
-    public static function decrypt($K, $IV, $C, $A, $T)
+    public static function decrypt($K, $IV, $C = null, $A = null, $T)
     {
+        Assertion::string($K, 'The key encryption key must be a binary string.');
+        Assertion::string($IV, 'The Initialization Vector must be a binary string.');
+        Assertion::nullOrString($C, 'The data to encrypt must be null or a binary string.');
+        Assertion::nullOrString($A, 'The Additional Authentication Data must be null or a binary string.');
+
+        $tag_length = self::getLength($T);
+        Assertion::integer($tag_length, 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
+        Assertion::inArray($tag_length, [128, 120, 112, 104, 96], 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
         list($J0, $v, $a_len_padding, $H) = self::common($K, $IV, $A);
 
         $P = self::getGCTR($K, self::getInc(32, $J0), $C);
@@ -56,11 +87,34 @@ final class AESGCM
         $c_len_padding = self::addPadding($C);
 
         $S = self::getHash($H, $A.str_pad('', $v / 8, "\0").$C.str_pad('', $u / 8, "\0").$a_len_padding.$c_len_padding);
-        $T1 = self::getMSB(self::getLength($T), self::getGCTR($K, $J0, $S));
+        $T1 = self::getMSB($tag_length, self::getGCTR($K, $J0, $S));
         $result = strcmp($T, $T1);
         Assertion::eq($result, 0, 'Unable to decrypt or to verify the tag.');
 
         return $P;
+    }
+
+    /**
+     * This method should be used if the tag is appended at the end of the ciphertext.
+     * It is used by some AES GCM implementations such as the Java one.
+     *
+     * @param string      $K          Key encryption key
+     * @param string      $IV         Initialization vector
+     * @param string|null $Ciphertext Data to encrypt (null for authentication)
+     * @param string|null $A          Additional Authentication Data
+     * @param int         $tag_length Tag length
+     *
+     * @return string
+     *
+     * @see self::encryptAndAppendTag
+     */
+    public static function decryptWithAppendedTag($K, $IV, $Ciphertext = null, $A = null, $tag_length = 128)
+    {
+        $tag_length_in_bits = $tag_length/8;
+        $C = mb_substr($Ciphertext, 0, -$tag_length_in_bits, '8bit');
+        $T = mb_substr($Ciphertext, -$tag_length_in_bits, null, '8bit');
+
+        return self::decrypt($K, $IV, $C, $A, $T);
     }
 
     /**
@@ -73,7 +127,7 @@ final class AESGCM
     private static function common($K, $IV, $A)
     {
         $key_length = mb_strlen($K, '8bit') * 8;
-        Assertion::inArray($key_length, [128, 192, 256], 'Bad key length.');
+        Assertion::inArray($key_length, [128, 192, 256], 'Bad key encryption key length.');
 
         $H = openssl_encrypt(str_repeat("\0", 16), 'aes-'.($key_length).'-ecb', $K, OPENSSL_NO_PADDING | OPENSSL_RAW_DATA); //---
         $iv_len = self::getLength($IV);

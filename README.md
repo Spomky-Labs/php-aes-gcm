@@ -1,6 +1,12 @@
 AES GCM (Galois Counter Mode) PHP Implementation
 ====================================================
 
+Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/Spomky-Labs/php-aes-gcm/badge.svg?style=beer-square)](https://beerpay.io/Spomky-Labs/php-aes-gcm)  [![Beerpay](https://beerpay.io/Spomky-Labs/php-aes-gcm/make-wish.svg?style=flat-square)](https://beerpay.io/Spomky-Labs/php-aes-gcm?focus=wish)
+
+----
+
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spomky-Labs/php-aes-gcm/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/php-aes-gcm/?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/Spomky-Labs/php-aes-gcm/badge.svg?branch=master)](https://coveralls.io/github/Spomky-Labs/php-aes-gcm?branch=master)
 
@@ -37,6 +43,8 @@ composer require "spomky-labs/php-aes-gcm"
 # How to use
 
 ```php
+<?php
+
 use AESGCM\AESGCM;
 
 // The Key Encryption Key
@@ -59,6 +67,55 @@ list($C, $T) = AESGCM::encrypt($K, $IV, $P, $A);
 
 $P = AESGCM::decrypt($K, $IV, $C, $A, $T);
 // The value of $P should be hex2bin('d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a721c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b39')
+```
+
+## Appended Tag
+
+Some implementations of this cypher may append the tag at the end of the ciphertext.
+This is commonly used by the Java implementation for example.
+
+This library provides an easy way to produce such a ciphertext and read it.
+
+```php
+<?php
+
+use AESGCM\AESGCM;
+
+// The values $K, $P, $A, $IV hereafter have the same meaning as above
+
+// $C is the encrypted data with the appended tag
+$C = AESGCM::encryptAndAppendTag($K, $IV, $P, $A);
+// The value of $C should be hex2bin('3980ca0b3c00e841eb06fac4872a2757859e1ceaa6efd984628593b40ca1e19c7d773d00c144c525ac619d18c84a3f4718e2448b2fe324d9ccda27102519498e80f1478f37ba55bd6d27618c')
+
+$P = AESGCM::decryptWithAppendedTag($K, $IV, $C, $A);
+// The value of $P should be hex2bin('d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a721c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b39')
+```
+
+## Tag Length
+
+By default the tag length is 128 bits. This value is highly recommended, however you may need to use another tag length.
+As per the cypher specification, the tag length could be 128, 120, 112, 104 or 96 bits.
+
+```php
+<?php
+
+use AESGCM\AESGCM;
+
+// The values $K, $P, $A, $IV hereafter have the same meaning as above
+$TL = 96; // In this example the tag length will be 96 bits
+
+list($C, $T) = AESGCM::encrypt($K, $IV, $P, $A, $TL);
+// The value of $C should be hex2bin('3980ca0b3c00e841eb06fac4872a2757859e1ceaa6efd984628593b40ca1e19c7d773d00c144c525ac619d18c84a3f4718e2448b2fe324d9ccda2710')
+// The value of $T should be hex2bin('2519498e80f1478f37ba55bd')
+```
+
+The tag length is automatically calculated during the decryption operation with the method `AESGCM::decrypt`.
+However, if the tag is appended at the end of the ciphertext and if it is not 128 bits, then it must be set:
+
+```php
+<?php
+
+$P = AESGCM::decryptWithAppendedTag($K, $IV, $C, $A, $TL);
 ```
 
 # Contributing
