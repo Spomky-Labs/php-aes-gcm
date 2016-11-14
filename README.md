@@ -6,6 +6,7 @@ Help me out for a couple of :beers:!
 [![Beerpay](https://beerpay.io/Spomky-Labs/php-aes-gcm/badge.svg?style=beer-square)](https://beerpay.io/Spomky-Labs/php-aes-gcm)  [![Beerpay](https://beerpay.io/Spomky-Labs/php-aes-gcm/make-wish.svg?style=flat-square)](https://beerpay.io/Spomky-Labs/php-aes-gcm?focus=wish)
 
 ----
+[![Gitter](https://badges.gitter.im/Spomky-Labs/php-aes-gcm.svg)](https://gitter.im/Spomky-Labs/php-aes-gcm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spomky-Labs/php-aes-gcm/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/php-aes-gcm/?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/Spomky-Labs/php-aes-gcm/badge.svg?branch=master)](https://coveralls.io/github/Spomky-Labs/php-aes-gcm?branch=master)
