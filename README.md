@@ -89,7 +89,7 @@ $C = AESGCM::encryptAndAppendTag($K, $IV, $P, $A);
 // The value of $C should be hex2bin('3980ca0b3c00e841eb06fac4872a2757859e1ceaa6efd984628593b40ca1e19c7d773d00c144c525ac619d18c84a3f4718e2448b2fe324d9ccda27102519498e80f1478f37ba55bd6d27618c')
 
 $P = AESGCM::decryptWithAppendedTag($K, $IV, $C, $A);
-// The value of $P should be hex2bin('d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a721c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b39')
+// The value of $P should be hex2bin('d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a721c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b392519498e80f1478f37ba55bd6d27618c')
 ```
 
 ## Tag Length
