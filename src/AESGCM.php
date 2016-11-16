@@ -34,11 +34,11 @@ final class AESGCM
         Assertion::nullOrString($A, 'The Additional Authentication Data must be null or a binary string.');
         Assertion::integer($tag_length, 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
         Assertion::inArray($tag_length, [128, 120, 112, 104, 96], 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
-        
+
         if (class_exists('\Crypto\Cipher')) {
             return self::encryptWithCryptoExtension($K, $key_length, $IV, $P, $A, $tag_length);
         }
-        
+
         return self::encryptWithPHP($K, $key_length, $IV, $P, $A, $tag_length);
     }
 
@@ -57,7 +57,7 @@ final class AESGCM
     {
         return implode(self::encrypt($K, $IV, $P, $A, $tag_length));
     }
-    
+
     /**
      * @param string      $K          Key encryption key
      * @param string      $key_length Key length
@@ -96,10 +96,10 @@ final class AESGCM
     {
         $cipher = \Crypto\Cipher::aes(\Crypto\Cipher::MODE_GCM, $key_length);
         $cipher->setAAD($A);
-        $cipher->setTagLength($tag_length/8);
+        $cipher->setTagLength($tag_length / 8);
         $C = $cipher->encrypt($P, $K, $IV);
         $T = $cipher->getTag();
-        
+
         return [$C, $T];
     }
 
@@ -112,7 +112,7 @@ final class AESGCM
      *
      * @return string
      */
-    public static function decrypt($K, $IV, $C = null, $A = null, $T)
+    public static function decrypt($K, $IV, $C, $A, $T)
     {
         Assertion::string($K, 'The key encryption key must be a binary string.');
         $key_length = mb_strlen($K, '8bit') * 8;
@@ -124,11 +124,11 @@ final class AESGCM
         $tag_length = self::getLength($T);
         Assertion::integer($tag_length, 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
         Assertion::inArray($tag_length, [128, 120, 112, 104, 96], 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
-        
+
         if (class_exists('\Crypto\Cipher')) {
             return self::decryptWithCryptoExtension($K, $key_length, $IV, $C, $A, $T, $tag_length);
         }
-        
+
         return self::decryptWithPHP($K, $key_length, $IV, $C, $A, $T, $tag_length);
     }
 
@@ -148,7 +148,7 @@ final class AESGCM
      */
     public static function decryptWithAppendedTag($K, $IV, $Ciphertext = null, $A = null, $tag_length = 128)
     {
-        $tag_length_in_bits = $tag_length/8;
+        $tag_length_in_bits = $tag_length / 8;
         $C = mb_substr($Ciphertext, 0, -$tag_length_in_bits, '8bit');
         $T = mb_substr($Ciphertext, -$tag_length_in_bits, null, '8bit');
 
@@ -166,7 +166,7 @@ final class AESGCM
      *
      * @return string
      */
-    private static function decryptWithPHP($K, $key_length, $IV, $C = null, $A = null, $T, $tag_length = 128)
+    private static function decryptWithPHP($K, $key_length, $IV, $C, $A, $T, $tag_length = 128)
     {
         list($J0, $v, $a_len_padding, $H) = self::common($K, $key_length, $IV, $A);
 
@@ -194,13 +194,13 @@ final class AESGCM
      *
      * @return string
      */
-    private static function decryptWithCryptoExtension($K, $key_length, $IV, $C = null, $A = null, $T, $tag_length = 128)
+    private static function decryptWithCryptoExtension($K, $key_length, $IV, $C, $A, $T, $tag_length = 128)
     {
         $cipher = \Crypto\Cipher::aes(\Crypto\Cipher::MODE_GCM, $key_length);
         $cipher->setTag($T);
         $cipher->setAAD($A);
-        $cipher->setTagLength($tag_length/8);
-        
+        $cipher->setTagLength($tag_length / 8);
+
         return $cipher->decrypt($C, $K, $IV);
     }
 
