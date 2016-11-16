@@ -35,7 +35,9 @@ final class AESGCM
         Assertion::integer($tag_length, 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
         Assertion::inArray($tag_length, [128, 120, 112, 104, 96], 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
 
-        if (class_exists('\Crypto\Cipher')) {
+        if (version_compare(PHP_VERSION, '7.1.0') >= 0) {
+            return self::encryptWithPHP71($K, $key_length, $IV, $P, $A, $tag_length);
+        } elseif (class_exists('\Crypto\Cipher')) {
             return self::encryptWithCryptoExtension($K, $key_length, $IV, $P, $A, $tag_length);
         }
 
@@ -56,6 +58,25 @@ final class AESGCM
     public static function encryptAndAppendTag($K, $IV, $P = null, $A = null, $tag_length = 128)
     {
         return implode(self::encrypt($K, $IV, $P, $A, $tag_length));
+    }
+
+    /**
+     * @param string      $K          Key encryption key
+     * @param string      $key_length Key length
+     * @param string      $IV         Initialization vector
+     * @param null|string $P          Data to encrypt (null for authentication)
+     * @param null|string $A          Additional Authentication Data
+     * @param int         $tag_length Tag length
+     *
+     * @return array
+     */
+    private static function encryptWithPHP71($K, $key_length, $IV, $P = null, $A = null, $tag_length = 128)
+    {
+        $mode = 'aes-'.($key_length).'-gcm';
+        $T = null;
+        $C = openssl_encrypt($P, $mode, $K, OPENSSL_RAW_DATA, $IV, $T, $A, $tag_length/8);
+
+        return [$C, $T];
     }
 
     /**
@@ -125,7 +146,9 @@ final class AESGCM
         Assertion::integer($tag_length, 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
         Assertion::inArray($tag_length, [128, 120, 112, 104, 96], 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
 
-        if (class_exists('\Crypto\Cipher')) {
+        if (version_compare(PHP_VERSION, '7.1.0') >= 0) {
+            return self::decryptWithPHP71($K, $key_length, $IV, $P, $A);
+        } elseif (class_exists('\Crypto\Cipher')) {
             return self::decryptWithCryptoExtension($K, $key_length, $IV, $C, $A, $T, $tag_length);
         }
 
@@ -153,6 +176,23 @@ final class AESGCM
         $T = mb_substr($Ciphertext, -$tag_length_in_bits, null, '8bit');
 
         return self::decrypt($K, $IV, $C, $A, $T);
+    }
+
+    /**
+     * @param string      $K          Key encryption key
+     * @param string      $key_length Key length
+     * @param string      $IV         Initialization vector
+     * @param string|null $C          Data to encrypt (null for authentication)
+     * @param string|null $A          Additional Authentication Data
+     * @param string      $T          Tag
+     *
+     * @return string
+     */
+    private static function decryptWithPHP71($K, $key_length, $IV, $C, $A, $T)
+    {
+        $mode = 'aes-'.($key_length).'-gcm';
+        
+        return openssl_decrypt($C, $mode, $K, OPENSSL_RAW_DATA, $IV, $T, $A);
     }
 
     /**
