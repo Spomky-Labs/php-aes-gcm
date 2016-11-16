@@ -33,8 +33,8 @@ This library needs at least ![PHP 5.4+](https://img.shields.io/badge/PHP-5.4%2B-
 
 It has been successfully tested using `PHP 5.4+`, `HHVM` and `PHP 7.0+` (stable and nightly branches).
 
-If you use PHP 7.1+, this library has very good performance (approx. 60k OPS). **If you do not use PHP 7.1+, we highly recommend you to install the [PHP Crypto extension](https://github.com/bukka/php-crypto).**
-This extension drastically increase the performance of this library (approx. 14k OPS). With our pure PHP method, you will have bad performance (approx. 16 OPS).
+If you use PHP 7.1+, this library has very good performance. **If you do not use PHP 7.1+, we highly recommend you to install the [PHP Crypto extension](https://github.com/bukka/php-crypto).**
+This extension drastically increase the performance of this library. With our pure PHP method, you will have low performance.
 
 # Installation
 
