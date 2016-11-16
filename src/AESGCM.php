@@ -27,21 +27,19 @@ final class AESGCM
     public static function encrypt($K, $IV, $P = null, $A = null, $tag_length = 128)
     {
         Assertion::string($K, 'The key encryption key must be a binary string.');
+        $key_length = mb_strlen($K, '8bit') * 8;
+        Assertion::inArray($key_length, [128, 192, 256], 'Bad key encryption key length.');
         Assertion::string($IV, 'The Initialization Vector must be a binary string.');
         Assertion::nullOrString($P, 'The data to encrypt must be null or a binary string.');
         Assertion::nullOrString($A, 'The Additional Authentication Data must be null or a binary string.');
         Assertion::integer($tag_length, 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
         Assertion::inArray($tag_length, [128, 120, 112, 104, 96], 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
-        list($J0, $v, $a_len_padding, $H) = self::common($K, $IV, $A);
-
-        $C = self::getGCTR($K, self::getInc(32, $J0), $P);
-        $u = self::calcVector($C);
-        $c_len_padding = self::addPadding($C);
-
-        $S = self::getHash($H, $A.str_pad('', $v / 8, "\0").$C.str_pad('', $u / 8, "\0").$a_len_padding.$c_len_padding);
-        $T = self::getMSB($tag_length, self::getGCTR($K, $J0, $S));
-
-        return [$C, $T];
+        
+        if (class_exists('\Crypto\Cipher')) {
+            return self::encryptWithCryptoExtension($K, $key_length, $IV, $P, $A, $tag_length);
+        }
+        
+        return self::encryptWithPHP($K, $key_length, $IV, $P, $A, $tag_length);
     }
 
     /**
@@ -59,6 +57,51 @@ final class AESGCM
     {
         return implode(self::encrypt($K, $IV, $P, $A, $tag_length));
     }
+    
+    /**
+     * @param string      $K          Key encryption key
+     * @param string      $key_length Key length
+     * @param string      $IV         Initialization vector
+     * @param null|string $P          Data to encrypt (null for authentication)
+     * @param null|string $A          Additional Authentication Data
+     * @param int         $tag_length Tag length
+     *
+     * @return array
+     */
+    private static function encryptWithPHP($K, $key_length, $IV, $P = null, $A = null, $tag_length = 128)
+    {
+        list($J0, $v, $a_len_padding, $H) = self::common($K, $key_length, $IV, $A);
+
+        $C = self::getGCTR($K, self::getInc(32, $J0), $P);
+        $u = self::calcVector($C);
+        $c_len_padding = self::addPadding($C);
+
+        $S = self::getHash($H, $A.str_pad('', $v / 8, "\0").$C.str_pad('', $u / 8, "\0").$a_len_padding.$c_len_padding);
+        $T = self::getMSB($tag_length, self::getGCTR($K, $J0, $S));
+
+        return [$C, $T];
+    }
+
+    /**
+     * @param string      $K          Key encryption key
+     * @param string      $key_length Key length
+     * @param string      $IV         Initialization vector
+     * @param null|string $P          Data to encrypt (null for authentication)
+     * @param null|string $A          Additional Authentication Data
+     * @param int         $tag_length Tag length
+     *
+     * @return array
+     */
+    private static function encryptWithCryptoExtension($K, $key_length, $IV, $P = null, $A = null, $tag_length = 128)
+    {
+        $cipher = \Crypto\Cipher::aes(\Crypto\Cipher::MODE_GCM, $key_length);
+        $cipher->setAAD($A);
+        $cipher->setTagLength($tag_length/8);
+        $C = $cipher->encrypt($P, $K, $IV);
+        $T = $cipher->getTag();
+        
+        return [$C, $T];
+    }
 
     /**
      * @param string      $K  Key encryption key
@@ -72,6 +115,8 @@ final class AESGCM
     public static function decrypt($K, $IV, $C = null, $A = null, $T)
     {
         Assertion::string($K, 'The key encryption key must be a binary string.');
+        $key_length = mb_strlen($K, '8bit') * 8;
+        Assertion::inArray($key_length, [128, 192, 256], 'Bad key encryption key length.');
         Assertion::string($IV, 'The Initialization Vector must be a binary string.');
         Assertion::nullOrString($C, 'The data to encrypt must be null or a binary string.');
         Assertion::nullOrString($A, 'The Additional Authentication Data must be null or a binary string.');
@@ -79,19 +124,12 @@ final class AESGCM
         $tag_length = self::getLength($T);
         Assertion::integer($tag_length, 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
         Assertion::inArray($tag_length, [128, 120, 112, 104, 96], 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
-        list($J0, $v, $a_len_padding, $H) = self::common($K, $IV, $A);
-
-        $P = self::getGCTR($K, self::getInc(32, $J0), $C);
-
-        $u = self::calcVector($C);
-        $c_len_padding = self::addPadding($C);
-
-        $S = self::getHash($H, $A.str_pad('', $v / 8, "\0").$C.str_pad('', $u / 8, "\0").$a_len_padding.$c_len_padding);
-        $T1 = self::getMSB($tag_length, self::getGCTR($K, $J0, $S));
-        $result = strcmp($T, $T1);
-        Assertion::eq($result, 0, 'Unable to decrypt or to verify the tag.');
-
-        return $P;
+        
+        if (class_exists('\Crypto\Cipher')) {
+            return self::decryptWithCryptoExtension($K, $key_length, $IV, $C, $A, $T, $tag_length);
+        }
+        
+        return self::decryptWithPHP($K, $key_length, $IV, $C, $A, $T, $tag_length);
     }
 
     /**
@@ -118,17 +156,64 @@ final class AESGCM
     }
 
     /**
+     * @param string      $K          Key encryption key
+     * @param string      $key_length Key length
+     * @param string      $IV         Initialization vector
+     * @param string|null $C          Data to encrypt (null for authentication)
+     * @param string|null $A          Additional Authentication Data
+     * @param string      $T          Tag
+     * @param int         $tag_length Tag length
+     *
+     * @return string
+     */
+    private static function decryptWithPHP($K, $key_length, $IV, $C = null, $A = null, $T, $tag_length = 128)
+    {
+        list($J0, $v, $a_len_padding, $H) = self::common($K, $IV, $A);
+
+        $P = self::getGCTR($K, $key_length, self::getInc(32, $J0), $C);
+
+        $u = self::calcVector($C);
+        $c_len_padding = self::addPadding($C);
+
+        $S = self::getHash($H, $A.str_pad('', $v / 8, "\0").$C.str_pad('', $u / 8, "\0").$a_len_padding.$c_len_padding);
+        $T1 = self::getMSB($tag_length, self::getGCTR($K, $key_length, $J0, $S));
+        $result = strcmp($T, $T1);
+        Assertion::eq($result, 0, 'Unable to decrypt or to verify the tag.');
+
+        return $P;
+    }
+
+    /**
+     * @param string      $K          Key encryption key
+     * @param string      $key_length Key length
+     * @param string      $IV         Initialization vector
+     * @param string|null $C          Data to encrypt (null for authentication)
+     * @param string|null $A          Additional Authentication Data
+     * @param string      $T          Tag
+     * @param int         $tag_length Tag length
+     *
+     * @return string
+     */
+    private static function decryptWithCryptoExtension($K, $key_length, $IV, $C = null, $A = null, $T, $tag_length = 128)
+    {
+        $cipher = Cipher::aes(Cipher::MODE_GCM, $key_length);
+        $cipher->setTag($T);
+        $cipher->setAAD($A);
+        $cipher->setTagLength($tag_length/8);
+        
+        return $cipher->decrypt($C, $K, $IV);
+    }
+
+    /**
      * @param $K
+     * @param $key_length
      * @param $IV
      * @param $A
      *
      * @return array
      */
-    private static function common($K, $IV, $A)
+    private static function common($K, $key_length, $IV, $A)
     {
-        $key_length = mb_strlen($K, '8bit') * 8;
-        Assertion::inArray($key_length, [128, 192, 256], 'Bad key encryption key length.');
-
         $H = openssl_encrypt(str_repeat("\0", 16), 'aes-'.($key_length).'-ecb', $K, OPENSSL_NO_PADDING | OPENSSL_RAW_DATA); //---
         $iv_len = self::getLength($IV);
 
@@ -310,12 +395,13 @@ final class AESGCM
 
     /**
      * @param string $K
+     * @param int    $key_length
      * @param string $ICB
      * @param string $X
      *
      * @return string
      */
-    private static function getGCTR($K, $ICB, $X)
+    private static function getGCTR($K, $key_length, $ICB, $X)
     {
         if (empty($X)) {
             return '';
@@ -328,7 +414,6 @@ final class AESGCM
         for ($i = 2; $i <= $n; $i++) {
             $CB[$i] = self::getInc(32, $CB[$i - 1]);
         }
-        $key_length = strlen($K) * 8;
         $mode = 'aes-'.($key_length).'-ecb';
         for ($i = 1; $i < $n; $i++) {
             $C = openssl_encrypt($CB[$i], $mode, $K, OPENSSL_NO_PADDING | OPENSSL_RAW_DATA);
