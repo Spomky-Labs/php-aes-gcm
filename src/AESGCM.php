@@ -196,7 +196,7 @@ final class AESGCM
      */
     private static function decryptWithCryptoExtension($K, $key_length, $IV, $C = null, $A = null, $T, $tag_length = 128)
     {
-        $cipher = Cipher::aes(Cipher::MODE_GCM, $key_length);
+        $cipher = \Crypto\Cipher::aes(\Crypto\Cipher::MODE_GCM, $key_length);
         $cipher->setTag($T);
         $cipher->setAAD($A);
         $cipher->setTagLength($tag_length/8);
