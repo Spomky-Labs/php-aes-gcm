@@ -147,7 +147,7 @@ final class AESGCM
         Assertion::inArray($tag_length, [128, 120, 112, 104, 96], 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
 
         if (version_compare(PHP_VERSION, '7.1.0RC') >= 0) {
-            return self::decryptWithPHP71($K, $key_length, $IV, $P, $A);
+            return self::decryptWithPHP71($K, $key_length, $IV, $C, $A, $T);
         } elseif (class_exists('\Crypto\Cipher')) {
             return self::decryptWithCryptoExtension($K, $key_length, $IV, $C, $A, $T, $tag_length);
         }
