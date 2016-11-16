@@ -168,7 +168,7 @@ final class AESGCM
      */
     private static function decryptWithPHP($K, $key_length, $IV, $C = null, $A = null, $T, $tag_length = 128)
     {
-        list($J0, $v, $a_len_padding, $H) = self::common($K, $IV, $A);
+        list($J0, $v, $a_len_padding, $H) = self::common($K, $key_length, $IV, $A);
 
         $P = self::getGCTR($K, $key_length, self::getInc(32, $J0), $C);
 
