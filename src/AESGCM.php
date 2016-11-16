@@ -75,11 +75,6 @@ final class AESGCM
         $mode = 'aes-'.($key_length).'-gcm';
         $T = null;
         $C = openssl_encrypt($P, $mode, $K, OPENSSL_RAW_DATA, $IV, $T, $A, $tag_length/8);
-        $C = null === $P ? null : $C;
-        var_dump($P);
-        var_dump(bin2hex($C));
-        var_dump(bin2hex($T));
-
         Assertion::true(false !== $C, 'Unable to encrypt the data.');
         
         return [$C, $T];
@@ -152,7 +147,7 @@ final class AESGCM
         Assertion::integer($tag_length, 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
         Assertion::inArray($tag_length, [128, 120, 112, 104, 96], 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
 
-        if (version_compare(PHP_VERSION, '7.1.0RC') >= 0) {
+        if (version_compare(PHP_VERSION, '7.1.0RC5') >= 0) {
             return self::decryptWithPHP71($K, $key_length, $IV, $C, $A, $T);
         } elseif (class_exists('\Crypto\Cipher')) {
             return self::decryptWithCryptoExtension($K, $key_length, $IV, $C, $A, $T, $tag_length);
@@ -197,8 +192,10 @@ final class AESGCM
     private static function decryptWithPHP71($K, $key_length, $IV, $C, $A, $T)
     {
         $mode = 'aes-'.($key_length).'-gcm';
+        $P = openssl_decrypt(null === $C ? '' : $C, $mode, $K, OPENSSL_RAW_DATA, $IV, $T, $A);
+        Assertion::true(false !== $P, 'Unable to decrypt or to verify the tag.');
         
-        return openssl_decrypt(null === $C ? '' : $C, $mode, $K, OPENSSL_RAW_DATA, $IV, $T, $A);
+        return $P
     }
 
     /**
@@ -223,8 +220,7 @@ final class AESGCM
 
         $S = self::getHash($H, $A.str_pad('', $v / 8, "\0").$C.str_pad('', $u / 8, "\0").$a_len_padding.$c_len_padding);
         $T1 = self::getMSB($tag_length, self::getGCTR($K, $key_length, $J0, $S));
-        $result = strcmp($T, $T1);
-        Assertion::eq($result, 0, 'Unable to decrypt or to verify the tag.');
+        Assertion::eq($T1, $T, 'Unable to decrypt or to verify the tag.');
 
         return $P;
     }
