@@ -31,7 +31,10 @@ The release process [is described here](doc/Release.md).
 
 This library needs at least ![PHP 5.4+](https://img.shields.io/badge/PHP-5.4%2B-ff69b4.svg).
 
-It has been successfully tested using `PHP 5.4`, `PHP 5.5`, `PHP 5.6`, `HHVM` and `PHP 7` (stable and nightly branches).
+It has been successfully tested using `PHP 5.4+`, `HHVM` and `PHP 7.0+` (stable and nightly branches).
+
+If you use PHP 7.1+, this library has very good performance. **If not, we highly recommend you to install the [PHP Crypto extension](https://github.com/bukka/php-crypto).**
+This extension drastically increase the performance of this library (approx. 900x faster!).
 
 # Installation
 
