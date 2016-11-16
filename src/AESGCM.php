@@ -72,12 +72,12 @@ final class AESGCM
     {
         list($J0, $v, $a_len_padding, $H) = self::common($K, $key_length, $IV, $A);
 
-        $C = self::getGCTR($K, self::getInc(32, $J0), $P);
+        $C = self::getGCTR($K, $key_length, self::getInc(32, $J0), $P);
         $u = self::calcVector($C);
         $c_len_padding = self::addPadding($C);
 
         $S = self::getHash($H, $A.str_pad('', $v / 8, "\0").$C.str_pad('', $u / 8, "\0").$a_len_padding.$c_len_padding);
-        $T = self::getMSB($tag_length, self::getGCTR($K, $J0, $S));
+        $T = self::getMSB($tag_length, self::getGCTR($K, $key_length, $J0, $S));
 
         return [$C, $T];
     }
