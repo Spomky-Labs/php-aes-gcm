@@ -195,7 +195,7 @@ final class AESGCM
         $P = openssl_decrypt(null === $C ? '' : $C, $mode, $K, OPENSSL_RAW_DATA, $IV, $T, $A);
         Assertion::true(false !== $P, 'Unable to decrypt or to verify the tag.');
         
-        return $P
+        return $P;
     }
 
     /**
