@@ -31,8 +31,7 @@ class IEEE802Test extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($P, $computed_P);
 
-        foreach([128, 120, 112, 104, 96] as $tag_length) {
-
+        foreach ([128, 120, 112, 104, 96] as $tag_length) {
             $c = AESGCM::encryptAndAppendTag($K, $IV, $P, $A, $tag_length);
             $p = AESGCM::decryptWithAppendedTag($K, $IV, $c, $A, $tag_length);
             $this->assertEquals($P, $p);
