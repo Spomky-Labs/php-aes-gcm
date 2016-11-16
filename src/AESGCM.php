@@ -75,6 +75,7 @@ final class AESGCM
         $mode = 'aes-'.($key_length).'-gcm';
         $T = null;
         $C = openssl_encrypt(null === $P ? '' : $P, $mode, $K, OPENSSL_RAW_DATA, $IV, $T, $A, $tag_length/8);
+        $C = null === $P ? '' : $C;
         var_dump($P);
         var_dump(bin2hex($C));
         var_dump(bin2hex($T));
