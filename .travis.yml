@@ -3,6 +3,8 @@ language: php
 sudo: false
 
 matrix:
+    allow_failures:
+        - php: nightly
     fast_finish: true
     include:
         - php: 5.4
