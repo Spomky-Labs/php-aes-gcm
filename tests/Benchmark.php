@@ -33,7 +33,7 @@ function runEncryptionBenchmark($nb = 1000)
     print_r('# AES-GCM ENCRYPTION BENCHMARK #'.PHP_EOL);
     print_r('################################'.PHP_EOL);
 
-    $time_start = -microtime(true);
+    $time = -microtime(true);
     for ($i = 0; $i < $nb; $i++) {
         AESGCM::encrypt($K, $IV, $P, $A);
     }
@@ -64,7 +64,7 @@ function runDecryptionBenchmark($nb = 1000)
     print_r('# AES-GCM DECRYPTION BENCHMARK #'.PHP_EOL);
     print_r('################################'.PHP_EOL);
 
-    $time_start = -microtime(true);
+    $time = -microtime(true);
     for ($i = 0; $i < $nb; $i++) {
         AESGCM::decrypt($K, $IV, $C, $A, $T);
     }
