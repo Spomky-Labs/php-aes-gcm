@@ -35,7 +35,7 @@ final class AESGCM
         Assertion::integer($tag_length, 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
         Assertion::inArray($tag_length, [128, 120, 112, 104, 96], 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
 
-        if (version_compare(PHP_VERSION, '7.1.0RC') >= 0) {
+        if (version_compare(PHP_VERSION, '7.1.0RC5') >= 0) {
             return self::encryptWithPHP71($K, $key_length, $IV, $P, $A, $tag_length);
         } elseif (class_exists('\Crypto\Cipher')) {
             return self::encryptWithCryptoExtension($K, $key_length, $IV, $P, $A, $tag_length);
@@ -75,7 +75,12 @@ final class AESGCM
         $mode = 'aes-'.($key_length).'-gcm';
         $T = null;
         $C = openssl_encrypt($P, $mode, $K, OPENSSL_RAW_DATA, $IV, $T, $A, $tag_length/8);
+        var_dump(bin2hex($C));
+        var_dump(bin2hex($T));
+        var_dump(openssl_error_string());
 
+        Assertion::true(false !== $C, 'Unable to encrypt the data.');
+        
         return [$C, $T];
     }
 
