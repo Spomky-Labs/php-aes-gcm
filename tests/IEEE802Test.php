@@ -24,15 +24,14 @@ class IEEE802Test extends \PHPUnit_Framework_TestCase
     {
         list($C, $T) = AESGCM::encrypt($K, $IV, $P, $A);
 
-        $this->assertEquals($C, $expected_C);
-        $this->assertEquals($T, $expected_T);
+        $this->assertEquals($expected_C, $C);
+        $this->assertEquals($expected_T, $T);
 
         $computed_P = AESGCM::decrypt($K, $IV, $C, $A, $T);
 
         $this->assertEquals($P, $computed_P);
 
-        foreach([128, 120, 112, 104, 96] as $tag_length) {
-
+        foreach ([128, 120, 112, 104, 96] as $tag_length) {
             $c = AESGCM::encryptAndAppendTag($K, $IV, $P, $A, $tag_length);
             $p = AESGCM::decryptWithAppendedTag($K, $IV, $c, $A, $tag_length);
             $this->assertEquals($P, $p);

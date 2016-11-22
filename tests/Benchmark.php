@@ -19,7 +19,7 @@ use Assert\Assertion;
  *
  * @param int $nb Number of encryption/decryption to perform
  */
-function runEncryptionBenchmark($nb = 100)
+function runEncryptionBenchmark($nb = 1000)
 {
     Assertion::integer($nb, 'The argument must be an integer');
     Assertion::greaterThan($nb, 1, 'The argument must be greater than 1');
@@ -33,13 +33,13 @@ function runEncryptionBenchmark($nb = 100)
     print_r('# AES-GCM ENCRYPTION BENCHMARK #'.PHP_EOL);
     print_r('################################'.PHP_EOL);
 
-    $time_start = microtime(true);
+    $time = -microtime(true);
     for ($i = 0; $i < $nb; $i++) {
         AESGCM::encrypt($K, $IV, $P, $A);
     }
-    $time_end = microtime(true);
-    $time = ($time_end - $time_start) / $nb * 1000;
-    printf('%f milliseconds/encryption (tested on %d encryptions)'.PHP_EOL, $time, $nb);
+    $time += microtime(true);
+    $ops = $nb / $time;
+    printf('%f OPS (tested on %d encryptions)'.PHP_EOL, $ops, $nb);
 
     print_r('################################'.PHP_EOL);
 }
@@ -49,7 +49,7 @@ function runEncryptionBenchmark($nb = 100)
  *
  * @param int $nb Number of encryption/decryption to perform
  */
-function runDecryptionBenchmark($nb = 100)
+function runDecryptionBenchmark($nb = 1000)
 {
     Assertion::integer($nb, 'The argument must be an integer');
     Assertion::greaterThan($nb, 1, 'The argument must be greater than 1');
@@ -64,13 +64,13 @@ function runDecryptionBenchmark($nb = 100)
     print_r('# AES-GCM DECRYPTION BENCHMARK #'.PHP_EOL);
     print_r('################################'.PHP_EOL);
 
-    $time_start = microtime(true);
+    $time = -microtime(true);
     for ($i = 0; $i < $nb; $i++) {
         AESGCM::decrypt($K, $IV, $C, $A, $T);
     }
-    $time_end = microtime(true);
-    $time = ($time_end - $time_start) / $nb * 1000;
-    printf('%f milliseconds/decryption (tested on %d decryptions)'.PHP_EOL, $time, $nb);
+    $time += microtime(true);
+    $ops = $nb / $time;
+    printf('%f OPS (tested on %d encryptions)'.PHP_EOL, $ops, $nb);
 
     print_r('################################'.PHP_EOL);
 }
