@@ -38,7 +38,7 @@ function runEncryptionBenchmark($nb = 1000)
         AESGCM::encrypt($K, $IV, $P, $A);
     }
     $time += microtime(true);
-    $ops = $nb/$time;
+    $ops = $nb / $time;
     printf('%f OPS (tested on %d encryptions)'.PHP_EOL, $ops, $nb);
 
     print_r('################################'.PHP_EOL);
@@ -69,7 +69,7 @@ function runDecryptionBenchmark($nb = 1000)
         AESGCM::decrypt($K, $IV, $C, $A, $T);
     }
     $time += microtime(true);
-    $ops = $nb/$time;
+    $ops = $nb / $time;
     printf('%f OPS (tested on %d encryptions)'.PHP_EOL, $ops, $nb);
 
     print_r('################################'.PHP_EOL);

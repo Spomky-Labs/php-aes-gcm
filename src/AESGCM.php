@@ -74,9 +74,9 @@ final class AESGCM
     {
         $mode = 'aes-'.($key_length).'-gcm';
         $T = null;
-        $C = openssl_encrypt($P, $mode, $K, OPENSSL_RAW_DATA, $IV, $T, $A, $tag_length/8);
+        $C = openssl_encrypt($P, $mode, $K, OPENSSL_RAW_DATA, $IV, $T, $A, $tag_length / 8);
         Assertion::true(false !== $C, 'Unable to encrypt the data.');
-        
+
         return [$C, $T];
     }
 
@@ -194,7 +194,7 @@ final class AESGCM
         $mode = 'aes-'.($key_length).'-gcm';
         $P = openssl_decrypt(null === $C ? '' : $C, $mode, $K, OPENSSL_RAW_DATA, $IV, $T, $A);
         Assertion::true(false !== $P, 'Unable to decrypt or to verify the tag.');
-        
+
         return $P;
     }
 
