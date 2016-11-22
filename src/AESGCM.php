@@ -16,22 +16,22 @@ use Assert\Assertion;
 final class AESGCM
 {
     /**
-     * @param string $K          Key encryption key
-     * @param string $IV         Initialization vector
-     * @param string $P          Data to encrypt (empty string for authentication)
-     * @param string $A          Additional Authentication Data
-     * @param int    $tag_length Tag length
+     * @param string      $K          Key encryption key
+     * @param string      $IV         Initialization vector
+     * @param null|string $P          Data to encrypt (null for authentication)
+     * @param null|string $A          Additional Authentication Data
+     * @param int         $tag_length Tag length
      *
      * @return array
      */
-    public static function encrypt($K, $IV, $P = '', $A = '', $tag_length = 128)
+    public static function encrypt($K, $IV, $P = null, $A = null, $tag_length = 128)
     {
         Assertion::string($K, 'The key encryption key must be a binary string.');
         $key_length = mb_strlen($K, '8bit') * 8;
         Assertion::inArray($key_length, [128, 192, 256], 'Bad key encryption key length.');
         Assertion::string($IV, 'The Initialization Vector must be a binary string.');
-        Assertion::string($P, 'The data to encrypt must be a binary string.');
-        Assertion::string($A, 'The Additional Authentication Data must be a binary string.');
+        Assertion::nullOrString($P, 'The data to encrypt must be null or a binary string.');
+        Assertion::nullOrString($A, 'The Additional Authentication Data must be null or a binary string.');
         Assertion::integer($tag_length, 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
         Assertion::inArray($tag_length, [128, 120, 112, 104, 96], 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
 
@@ -47,33 +47,33 @@ final class AESGCM
     /**
      * This method will append the tag at the end of the ciphertext.
      *
-     * @param string $K          Key encryption key
-     * @param string $IV         Initialization vector
-     * @param string $P          Data to encrypt (empty string for authentication)
-     * @param string $A          Additional Authentication Data
-     * @param int    $tag_length Tag length
+     * @param string      $K          Key encryption key
+     * @param string      $IV         Initialization vector
+     * @param null|string $P          Data to encrypt (null for authentication)
+     * @param null|string $A          Additional Authentication Data
+     * @param int         $tag_length Tag length
      *
      * @return string
      */
-    public static function encryptAndAppendTag($K, $IV, $P = '', $A = '', $tag_length = 128)
+    public static function encryptAndAppendTag($K, $IV, $P = null, $A = null, $tag_length = 128)
     {
         return implode(self::encrypt($K, $IV, $P, $A, $tag_length));
     }
 
     /**
-     * @param string $K          Key encryption key
-     * @param string $key_length Key length
-     * @param string $IV         Initialization vector
-     * @param string $P          Data to encrypt (empty string for authentication)
-     * @param string $A          Additional Authentication Data
-     * @param int    $tag_length Tag length
+     * @param string      $K          Key encryption key
+     * @param string      $key_length Key length
+     * @param string      $IV         Initialization vector
+     * @param null|string $P          Data to encrypt (null for authentication)
+     * @param null|string $A          Additional Authentication Data
+     * @param int         $tag_length Tag length
      *
      * @return array
      */
-    private static function encryptWithPHP71($K, $key_length, $IV, $P = '', $A = '', $tag_length = 128)
+    private static function encryptWithPHP71($K, $key_length, $IV, $P = null, $A = null, $tag_length = 128)
     {
         $mode = 'aes-'.($key_length).'-gcm';
-        $T = '';
+        $T = null;
         $C = openssl_encrypt($P, $mode, $K, OPENSSL_RAW_DATA, $IV, $T, $A, $tag_length / 8);
         Assertion::true(false !== $C, 'Unable to encrypt the data.');
 
@@ -81,16 +81,16 @@ final class AESGCM
     }
 
     /**
-     * @param string $K          Key encryption key
-     * @param string $key_length Key length
-     * @param string $IV         Initialization vector
-     * @param string $P          Data to encrypt (empty string for authentication)
-     * @param string $A          Additional Authentication Data
-     * @param int    $tag_length Tag length
+     * @param string      $K          Key encryption key
+     * @param string      $key_length Key length
+     * @param string      $IV         Initialization vector
+     * @param null|string $P          Data to encrypt (null for authentication)
+     * @param null|string $A          Additional Authentication Data
+     * @param int         $tag_length Tag length
      *
      * @return array
      */
-    private static function encryptWithPHP($K, $key_length, $IV, $P = '', $A = '', $tag_length = 128)
+    private static function encryptWithPHP($K, $key_length, $IV, $P = null, $A = null, $tag_length = 128)
     {
         list($J0, $v, $a_len_padding, $H) = self::common($K, $key_length, $IV, $A);
 
@@ -105,16 +105,16 @@ final class AESGCM
     }
 
     /**
-     * @param string $K          Key encryption key
-     * @param string $key_length Key length
-     * @param string $IV         Initialization vector
-     * @param string $P          Data to encrypt (empty string for authentication)
-     * @param string $A          Additional Authentication Data
-     * @param int    $tag_length Tag length
+     * @param string      $K          Key encryption key
+     * @param string      $key_length Key length
+     * @param string      $IV         Initialization vector
+     * @param null|string $P          Data to encrypt (null for authentication)
+     * @param null|string $A          Additional Authentication Data
+     * @param int         $tag_length Tag length
      *
      * @return array
      */
-    private static function encryptWithCryptoExtension($K, $key_length, $IV, $P = '', $A = '', $tag_length = 128)
+    private static function encryptWithCryptoExtension($K, $key_length, $IV, $P = null, $A = null, $tag_length = 128)
     {
         $cipher = \Crypto\Cipher::aes(\Crypto\Cipher::MODE_GCM, $key_length);
         $cipher->setAAD($A);
@@ -126,11 +126,11 @@ final class AESGCM
     }
 
     /**
-     * @param string $K  Key encryption key
-     * @param string $IV Initialization vector
-     * @param string $C  Data to encrypt (empty string for authentication)
-     * @param string $A  Additional Authentication Data
-     * @param string $T  Tag
+     * @param string      $K  Key encryption key
+     * @param string      $IV Initialization vector
+     * @param string|null $C  Data to encrypt (null for authentication)
+     * @param string|null $A  Additional Authentication Data
+     * @param string      $T  Tag
      *
      * @return string
      */
@@ -140,8 +140,8 @@ final class AESGCM
         $key_length = mb_strlen($K, '8bit') * 8;
         Assertion::inArray($key_length, [128, 192, 256], 'Bad key encryption key length.');
         Assertion::string($IV, 'The Initialization Vector must be a binary string.');
-        Assertion::string($C, 'The data to encrypt must be a binary string.');
-        Assertion::string($A, 'The Additional Authentication Data must be a binary string.');
+        Assertion::nullOrString($C, 'The data to encrypt must be null or a binary string.');
+        Assertion::nullOrString($A, 'The Additional Authentication Data must be null or a binary string.');
 
         $tag_length = self::getLength($T);
         Assertion::integer($tag_length, 'Invalid tag length. Supported values are: 128, 120, 112, 104 and 96.');
@@ -160,17 +160,17 @@ final class AESGCM
      * This method should be used if the tag is appended at the end of the ciphertext.
      * It is used by some AES GCM implementations such as the Java one.
      *
-     * @param string $K          Key encryption key
-     * @param string $IV         Initialization vector
-     * @param string $Ciphertext Data to encrypt (empty string for authentication)
-     * @param string $A          Additional Authentication Data
-     * @param int    $tag_length Tag length
+     * @param string      $K          Key encryption key
+     * @param string      $IV         Initialization vector
+     * @param string|null $Ciphertext Data to encrypt (null for authentication)
+     * @param string|null $A          Additional Authentication Data
+     * @param int         $tag_length Tag length
      *
      * @return string
      *
      * @see self::encryptAndAppendTag
      */
-    public static function decryptWithAppendedTag($K, $IV, $Ciphertext = '', $A = '', $tag_length = 128)
+    public static function decryptWithAppendedTag($K, $IV, $Ciphertext = null, $A = null, $tag_length = 128)
     {
         $tag_length_in_bits = $tag_length / 8;
         $C = mb_substr($Ciphertext, 0, -$tag_length_in_bits, '8bit');
@@ -180,32 +180,32 @@ final class AESGCM
     }
 
     /**
-     * @param string $K          Key encryption key
-     * @param string $key_length Key length
-     * @param string $IV         Initialization vector
-     * @param string $C          Data to encrypt (empty string for authentication)
-     * @param string $A          Additional Authentication Data
-     * @param string $T          Tag
+     * @param string      $K          Key encryption key
+     * @param string      $key_length Key length
+     * @param string      $IV         Initialization vector
+     * @param string|null $C          Data to encrypt (null for authentication)
+     * @param string|null $A          Additional Authentication Data
+     * @param string      $T          Tag
      *
      * @return string
      */
     private static function decryptWithPHP71($K, $key_length, $IV, $C, $A, $T)
     {
         $mode = 'aes-'.($key_length).'-gcm';
-        $P = openssl_decrypt($C, $mode, $K, OPENSSL_RAW_DATA, $IV, $T, $A);
+        $P = openssl_decrypt(null === $C ? '' : $C, $mode, $K, OPENSSL_RAW_DATA, $IV, $T, $A);
         Assertion::true(false !== $P, 'Unable to decrypt or to verify the tag.');
 
         return $P;
     }
 
     /**
-     * @param string $K          Key encryption key
-     * @param string $key_length Key length
-     * @param string $IV         Initialization vector
-     * @param string $C          Data to encrypt (empty string for authentication)
-     * @param string $A          Additional Authentication Data
-     * @param string $T          Tag
-     * @param int    $tag_length Tag length
+     * @param string      $K          Key encryption key
+     * @param string      $key_length Key length
+     * @param string      $IV         Initialization vector
+     * @param string|null $C          Data to encrypt (null for authentication)
+     * @param string|null $A          Additional Authentication Data
+     * @param string      $T          Tag
+     * @param int         $tag_length Tag length
      *
      * @return string
      */
@@ -226,13 +226,13 @@ final class AESGCM
     }
 
     /**
-     * @param string $K          Key encryption key
-     * @param string $key_length Key length
-     * @param string $IV         Initialization vector
-     * @param string $C          Data to encrypt (empty string for authentication)
-     * @param string $A          Additional Authentication Data
-     * @param string $T          Tag
-     * @param int    $tag_length Tag length
+     * @param string      $K          Key encryption key
+     * @param string      $key_length Key length
+     * @param string      $IV         Initialization vector
+     * @param string|null $C          Data to encrypt (null for authentication)
+     * @param string|null $A          Additional Authentication Data
+     * @param string      $T          Tag
+     * @param int         $tag_length Tag length
      *
      * @return string
      */

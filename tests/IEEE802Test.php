@@ -24,8 +24,8 @@ class IEEE802Test extends \PHPUnit_Framework_TestCase
     {
         list($C, $T) = AESGCM::encrypt($K, $IV, $P, $A);
 
-        $this->assertEquals($C, $expected_C);
-        $this->assertEquals($T, $expected_T);
+        $this->assertEquals($expected_C, $C);
+        $this->assertEquals($expected_T, $T);
 
         $computed_P = AESGCM::decrypt($K, $IV, $C, $A, $T);
 
@@ -43,18 +43,18 @@ class IEEE802Test extends \PHPUnit_Framework_TestCase
         return [
             [
                 hex2bin('AD7A2BD03EAC835A6F620FDCB506B345'), // K
-                '', // P
+                null, // P
                 hex2bin('D609B1F056637A0D46DF998D88E5222AB2C2846512153524C0895E8108000F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F30313233340001'), // A
                 hex2bin('12153524C0895E81B2C28465'), // IV
-                '', // Expected C
+                null, // Expected C
                 hex2bin('F09478A9B09007D06F46E9B6A1DA25DD'), // Expected T
             ],
             [
                 hex2bin('E3C08A8F06C6E3AD95A70557B23F75483CE33021A9C72B7025666204C69C0B72'), // K
-                '', // P
+                null, // P
                 hex2bin('D609B1F056637A0D46DF998D88E5222AB2C2846512153524C0895E8108000F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F30313233340001'), // A
                 hex2bin('12153524C0895E81B2C28465'), // IV
-                '', // Expected C
+                null, // Expected C
                 hex2bin('2F0BC5AF409E06D609EA8B7D0FA5EA50'), // Expected T
             ],
             [
@@ -75,18 +75,18 @@ class IEEE802Test extends \PHPUnit_Framework_TestCase
             ],
             [
                 hex2bin('071B113B0CA743FECCCF3D051F737382'), // K
-                '', // P
+                null, // P
                 hex2bin('E20106D7CD0DF0761E8DCD3D88E5400076D457ED08000F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A0003'), // A
                 hex2bin('F0761E8DCD3D000176D457ED'), // IV
-                '', // Expected C
+                null, // Expected C
                 hex2bin('0C017BC73B227DFCC9BAFA1C41ACC353'), // Expected T
             ],
             [
                 hex2bin('691D3EE909D7F54167FD1CA0B5D769081F2BDE1AEE655FDBAB80BD5295AE6BE7'), // K
-                '', // P
+                null, // P
                 hex2bin('E20106D7CD0DF0761E8DCD3D88E5400076D457ED08000F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A0003'), // A
                 hex2bin('F0761E8DCD3D000176D457ED'), // IV
-                '', // Expected C
+                null, // Expected C
                 hex2bin('35217C774BBC31B63166BCF9D4ABED07'), // Expected T
             ],
             [
@@ -107,18 +107,18 @@ class IEEE802Test extends \PHPUnit_Framework_TestCase
             ],
             [
                 hex2bin('013FE00B5F11BE7F866D0CBBC55A7A90'), // K
-                '', // P
+                null, // P
                 hex2bin('84C5D513D2AAF6E5BBD2727788E523008932D6127CFDE9F9E33724C608000F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F0005'), // A
                 hex2bin('7CFDE9F9E33724C68932D612'), // IV
-                '', // Expected C
+                null, // Expected C
                 hex2bin('217867E50C2DAD74C28C3B50ABDF695A'), // Expected T
             ],
             [
                 hex2bin('83C093B58DE7FFE1C0DA926AC43FB3609AC1C80FEE1B624497EF942E2F79A823'), // K
-                '', // P
+                null, // P
                 hex2bin('84C5D513D2AAF6E5BBD2727788E523008932D6127CFDE9F9E33724C608000F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F0005'), // A
                 hex2bin('7CFDE9F9E33724C68932D612'), // IV
-                '', // Expected C
+                null, // Expected C
                 hex2bin('6EE160E8FAECA4B36C86B234920CA975'), // Expected T
             ],
             [
@@ -139,18 +139,18 @@ class IEEE802Test extends \PHPUnit_Framework_TestCase
             ],
             [
                 hex2bin('88EE087FD95DA9FBF6725AA9D757B0CD'), // K
-                '', // P
+                null, // P
                 hex2bin('68F2E77696CE7AE8E2CA4EC588E541002E58495C08000F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D0007'), // A
                 hex2bin('7AE8E2CA4EC500012E58495C'), // IV
-                '', // Expected C
+                null, // Expected C
                 hex2bin('07922B8EBCF10BB2297588CA4C614523'), // Expected T
             ],
             [
                 hex2bin('4C973DBC7364621674F8B5B89E5C15511FCED9216490FB1C1A2CAA0FFE0407E5'), // K
-                '', // P
+                null, // P
                 hex2bin('68F2E77696CE7AE8E2CA4EC588E541002E58495C08000F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D0007'), // A
                 hex2bin('7AE8E2CA4EC500012E58495C'), // IV
-                '', // Expected C
+                null, // Expected C
                 hex2bin('00BDA1B7E87608BCBF470F12157F4C07'), // Expected T
             ],
             [

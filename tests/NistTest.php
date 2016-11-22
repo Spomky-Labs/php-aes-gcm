@@ -24,8 +24,8 @@ class NistTest extends \PHPUnit_Framework_TestCase
     {
         list($C, $T) = AESGCM::encrypt($K, $IV, $P, $A);
 
-        $this->assertEquals($C, $expected_C);
-        $this->assertEquals($T, $expected_T);
+        $this->assertEquals($expected_C, $C);
+        $this->assertEquals($expected_T, $T);
 
         $computed_P = AESGCM::decrypt($K, $IV, $C, $A, $T);
 
@@ -43,16 +43,16 @@ class NistTest extends \PHPUnit_Framework_TestCase
         return [
             [
                 hex2bin('00000000000000000000000000000000'), // K
-                '', // P
-                '', // A
+                null, // P
+                null, // A
                 hex2bin('000000000000000000000000'), // IV
-                '', // Expected C
+                null, // Expected C
                 hex2bin('58e2fccefa7e3061367f1d57a4e7455a'), // Expected T
             ],
             [
                 hex2bin('00000000000000000000000000000000'), // K
                 hex2bin('00000000000000000000000000000000'), // P
-                '', // A
+                null, // A
                 hex2bin('000000000000000000000000'), // IV
                 hex2bin('0388dace60b6a392f328c2b971b2fe78'), // Expected C
                 hex2bin('ab6e47d42cec13bdf53a67b21257bddf'), // Expected T
@@ -60,7 +60,7 @@ class NistTest extends \PHPUnit_Framework_TestCase
             [
                 hex2bin('feffe9928665731c6d6a8f9467308308'), // K
                 hex2bin('d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a721c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b391aafd255'), // P
-                '', // A
+                null, // A
                 hex2bin('cafebabefacedbaddecaf888'), // IV
                 hex2bin('42831ec2217774244b7221b784d0d49ce3aa212f2c02a4e035c17e2329aca12e21d514b25466931c7d8f6a5aac84aa051ba30b396a0aac973d58e091473f5985'), // Expected C
                 hex2bin('4d5c2af327cd64a62cf35abd2ba6fab4'), // Expected T
@@ -91,16 +91,16 @@ class NistTest extends \PHPUnit_Framework_TestCase
             ],
             [
                 hex2bin('000000000000000000000000000000000000000000000000'), // K
-                '', // P
-                '', // A
+                null, // P
+                null, // A
                 hex2bin('000000000000000000000000'), // IV
-                '', // Expected C
+                null, // Expected C
                 hex2bin('cd33b28ac773f74ba00ed1f312572435'), // Expected T
             ],
             [
                 hex2bin('000000000000000000000000000000000000000000000000'), // K
                 hex2bin('00000000000000000000000000000000'), // P
-                '', // A
+                null, // A
                 hex2bin('000000000000000000000000'), // IV
                 hex2bin('98e7247c07f0fe411c267e4384b0f600'), // Expected C
                 hex2bin('2ff58d80033927ab8ef4d4587514f0fb'), // Expected T
@@ -108,7 +108,7 @@ class NistTest extends \PHPUnit_Framework_TestCase
             [
                 hex2bin('feffe9928665731c6d6a8f9467308308feffe9928665731c'), // K
                 hex2bin('d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a721c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b391aafd255'), // P
-                '', // A
+                null, // A
                 hex2bin('cafebabefacedbaddecaf888'), // IV
                 hex2bin('3980ca0b3c00e841eb06fac4872a2757859e1ceaa6efd984628593b40ca1e19c7d773d00c144c525ac619d18c84a3f4718e2448b2fe324d9ccda2710acade256'), // Expected C
                 hex2bin('9924a7c8587336bfb118024db8674a14'), // Expected T
@@ -139,16 +139,16 @@ class NistTest extends \PHPUnit_Framework_TestCase
             ],
             [
                 hex2bin('0000000000000000000000000000000000000000000000000000000000000000'), // K
-                '', // P
-                '', // A
+                null, // P
+                null, // A
                 hex2bin('000000000000000000000000'), // IV
-                '', // Expected C
+                null, // Expected C
                 hex2bin('530f8afbc74536b9a963b4f1c4cb738b'), // Expected T
             ],
             [
                 hex2bin('0000000000000000000000000000000000000000000000000000000000000000'), // K
                 hex2bin('00000000000000000000000000000000'), // P
-                '', // A
+                null, // A
                 hex2bin('000000000000000000000000'), // IV
                 hex2bin('cea7403d4d606b6e074ec5d3baf39d18'), // Expected C
                 hex2bin('d0d1c8a799996bf0265b98b5d48ab919'), // Expected T
@@ -156,7 +156,7 @@ class NistTest extends \PHPUnit_Framework_TestCase
             [
                 hex2bin('feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308'), // K
                 hex2bin('d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a721c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b391aafd255'), // P
-                '', // A
+                null, // A
                 hex2bin('cafebabefacedbaddecaf888'), // IV
                 hex2bin('522dc1f099567d07f47f37a32a84427d643a8cdcbfe5c0c97598a2bd2555d1aa8cb08e48590dbb3da7b08b1056828838c5f61e6393ba7a0abcc9f662898015ad'), // Expected C
                 hex2bin('b094dac5d93471bdec1a502270e3cc6c'), // Expected T
