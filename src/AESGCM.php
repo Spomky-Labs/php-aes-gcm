@@ -192,7 +192,7 @@ final class AESGCM
     private static function decryptWithPHP71($K, $key_length, $IV, $C, $A, $T)
     {
         $mode = 'aes-'.($key_length).'-gcm';
-        $P = openssl_decrypt(null === $C ? '' : $C, $mode, $K, OPENSSL_RAW_DATA, $IV, $T, $A);
+        $P = openssl_decrypt(null === $C ? '' : $C, $mode, $K, OPENSSL_RAW_DATA, $IV, $T, null === $A ? '' : $A);
         Assertion::true(false !== $P, 'Unable to decrypt or to verify the tag.');
 
         return $P;
