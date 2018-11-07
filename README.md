@@ -20,7 +20,7 @@ Help me out for a couple of :beers:!
 [![Latest Stable Version](https://poser.pugx.org/Spomky-Labs/php-aes-gcm/v/stable.png)](https://packagist.org/packages/Spomky-Labs/php-aes-gcm)
 [![Total Downloads](https://poser.pugx.org/Spomky-Labs/php-aes-gcm/downloads.png)](https://packagist.org/packages/Spomky-Labs/php-aes-gcm)
 [![Latest Unstable Version](https://poser.pugx.org/Spomky-Labs/php-aes-gcm/v/unstable.png)](https://packagist.org/packages/Spomky-Labs/php-aes-gcm)
-[![License](https://poser.pugx.org/Spomky-Labs/php-aes-gcm/license.png)](https://packagist.org/packages/Spomky-Labs/php-aes-gcm)
+[![License](https://poser.pugx.org/Spomky-Labs/php-aes-gcm/license.png)](https://packagist.org/packages/Spomky-Labs/php-aes-gcm) [![GuardRails badge](https://badges.production.guardrails.io/Spomky-Labs/php-aes-gcm.svg)](https://www.guardrails.io)
 
 
 # The Release Process
