@@ -1,13 +1,6 @@
 AES GCM (Galois Counter Mode) PHP Implementation
 ====================================================
 
-Help me out for a couple of :beers:!
-
-[![Beerpay](https://beerpay.io/Spomky-Labs/php-aes-gcm/badge.svg?style=beer-square)](https://beerpay.io/Spomky-Labs/php-aes-gcm)  [![Beerpay](https://beerpay.io/Spomky-Labs/php-aes-gcm/make-wish.svg?style=flat-square)](https://beerpay.io/Spomky-Labs/php-aes-gcm?focus=wish)
-
-----
-[![Gitter](https://badges.gitter.im/Spomky-Labs/php-aes-gcm.svg)](https://gitter.im/Spomky-Labs/php-aes-gcm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spomky-Labs/php-aes-gcm/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/php-aes-gcm/?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/Spomky-Labs/php-aes-gcm/badge.svg?branch=master)](https://coveralls.io/github/Spomky-Labs/php-aes-gcm?branch=master)
 
@@ -124,6 +117,14 @@ $TL = 96; // In this example the tag length will be 96 bits
 
 $P = AESGCM::decryptWithAppendedTag($K, $IV, $C, $A, $TL);
 ```
+
+# Support
+
+I bring solutions to your problems and answer your questions.
+
+If you really love that project and the work I have done or if you want I prioritize your issues, then you can help me out for a couple of :beers: or more!
+
+[![Become a Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/FlorentMorselli)
 
 # Contributing
 
