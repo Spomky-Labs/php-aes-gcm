@@ -22,7 +22,7 @@
     "require": {
         "php": ">=5.4",
         "lib-openssl": "*",
-        "beberlei/assert": "^2.4",
+        "beberlei/assert": "^2.4|^3.0",
         "symfony/polyfill-mbstring": "^1.1"
     },
     "require-dev": {
